@@ -1,0 +1,80 @@
+
+import java.util.*;
+import java.io.*;
+
+public class Assignment3 {
+
+	public static void main(String[] args) {
+
+		//Generates random Numbers Between 0-1000, stores 10,000 of them.
+		Random ran = new Random();
+		int unsort[] = new int[10000];
+
+		for(int i = 0; i < unsort.length; i++)
+		{
+			unsort[i] = ran.nextInt(1001);
+		}
+
+		Radixsort(unsort);
+
+		try
+		{
+			File file = new File("C:\\Users\\rcwie\\workspace\\CSC362\\output.txt");	//Please Input place to get the file
+
+			PrintWriter bw = new PrintWriter(file);
+
+			for(int i = 0; i < unsort.length; i++)
+			{
+				bw.println(unsort[i]);
+			}
+			bw.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("No file found :c");
+		}
+	}
+
+	public static void Radixsort(int [] a)
+	{
+		int max = a[0];
+		int expon = 1;
+		int sort[] = new int[10000];
+
+		//find biggest number
+
+		for(int i = 0; i < a.length; i++)
+		{
+			if(max < a[i])
+			{
+				max = a[i];
+			}
+		}
+
+		//create buckets for n sized digits
+
+		while (max / expon > 0)	// Used to determine when max digit size is reached
+		{
+			int[] bucket = new int[250];
+
+			for(int i = 0; i < a.length; i++)
+			{
+				bucket[(a[i] / expon) % 10]++;	//Checking digit's place i puts increments corresponding bucket
+			}
+			for(int i = 1; i < 10; i++)
+			{
+				bucket[i] += bucket[i - 1];
+			}
+			for(int i = a.length - 1; i >= 0; i--)	//Sorting Process
+			{
+				sort[--bucket[(a[i] / expon) % 10]] = a[i];
+			}
+			for(int i = 0; i < a.length; i++)	//Puts sorted array into original input array
+			{
+				a[i] = sort[i];
+			}
+			expon *= 10;
+		}
+	}
+}
